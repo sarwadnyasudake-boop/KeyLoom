@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#080d18">
+  <title>KeyLoom — Password Security Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:#080d18; --panel:#101a2a; --panel2:#0c1422; --line:#24344a;
+      --text:#eef5ff; --muted:#9aabc2; --soft:#6f829d;
+      --cyan:#57e3d0; --blue:#6d9cff; --green:#58d6a0;
+      --amber:#f3c56c; --red:#ff7889; --radius:22px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;color:var(--text);font-family:Manrope,system-ui,sans-serif;
+      background:radial-gradient(ellipse at 12% 0%,rgba(40,111,130,.20),transparent 34%),
+                 radial-gradient(ellipse at 92% 12%,rgba(69,91,173,.20),transparent 30%),var(--bg)}
+    button,input{font:inherit}
+    .shell{width:min(1120px,calc(100% - 36px));margin:auto;padding:34px 0 54px}
+    .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:64px}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:.12em}
+    .brandmark{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;
+      color:#06131a;background:linear-gradient(135deg,var(--cyan),var(--blue));font-size:21px;
+      box-shadow:0 8px 30px #57e3d033}
+    .brand small{display:block;color:var(--soft);font-size:10px;letter-spacing:.22em;font-weight:700;margin-top:2px}
+    .status{border:1px solid #244b49;background:#102a2b;color:#8be8ce;border-radius:99px;
+      padding:8px 13px;font:11px 'DM Mono',monospace;letter-spacing:.08em}
+    .hero{max-width:760px;margin:0 auto 42px;text-align:center}
+    .eyebrow{display:inline-flex;gap:8px;align-items:center;border:1px solid #284052;
+      border-radius:99px;padding:7px 12px;color:var(--cyan);font:11px 'DM Mono',monospace;
+      letter-spacing:.13em;text-transform:uppercase;background:#0d1c2a}
+    .pulse{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green)}
+    h1{font-size:clamp(38px,6vw,68px);line-height:1.04;letter-spacing:-.055em;margin:22px 0 15px}
+    h1 span{background:linear-gradient(100deg,var(--cyan),#8bb5ff 75%);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .hero p{max-width:590px;margin:auto;color:var(--muted);font-size:15px;line-height:1.8}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:stretch}
+    .card{position:relative;overflow:hidden;background:linear-gradient(155deg,#142238,#0e1726 72%);
+      border:1px solid var(--line);border-radius:var(--radius);padding:27px;
+      box-shadow:0 22px 65px #0004}
+    .card:before{content:"";position:absolute;width:180px;height:180px;right:-100px;top:-105px;
+      border-radius:50%;background:#5be0d01a;filter:blur(2px);pointer-events:none}
+    .cardhead{display:flex;align-items:flex-start;gap:14px;margin-bottom:23px}
+    .iconbox{width:46px;height:46px;flex:0 0 46px;border-radius:15px;display:grid;place-items:center;
+      background:#183c45;color:var(--cyan);font-size:21px;border:1px solid #28616a}
+    .generator .iconbox{background:#1d2c4b;color:#9ab8ff;border-color:#354d7c}
+    h2{font-size:19px;letter-spacing:-.02em;margin:1px 0 5px}
+    .sub{font-size:12px;color:var(--muted);line-height:1.6}
+    label,.legend{font-size:12px;color:#d5e2f3;font-weight:700;letter-spacing:.035em}
+    .inputrow{display:flex;gap:9px;margin:9px 0 13px}
+    input[type=password],input[type=text],input[type=number]{width:100%;min-width:0;background:#091321;
+      color:var(--text);border:1px solid #2a3b52;border-radius:12px;padding:13px 14px;outline:none;
+      transition:.2s}
+    input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px #57e3d018}
+    input::placeholder{color:#63758d}
+    .btn{border:0;border-radius:12px;padding:12px 15px;cursor:pointer;font-weight:800;font-size:12px;
+      transition:transform .18s,filter .18s}
+    .btn:hover{transform:translateY(-1px);filter:brightness(1.1)}
+    .btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+    .primary{width:100%;color:#06151b;background:linear-gradient(100deg,var(--cyan),#8ebaff);
+      box-shadow:0 8px 22px #57e3d01c}
+    .secondary{background:#1b2b41;color:#dce9fa;border:1px solid #344961;white-space:nowrap}
+    .meterbox{margin-top:18px;border:1px solid #293b51;border-radius:15px;background:#0a1422;padding:15px}
+    .meterhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+    .meterlabel{font:10px 'DM Mono',monospace;color:var(--soft);letter-spacing:.13em}
+    .level{font-size:12px;font-weight:800;color:var(--muted)}
+    .bars{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+    .bars i{height:6px;border-radius:99px;background:#27364a;transition:background .2s}
+    .easy .bars i:nth-child(1){background:var(--red)}
+    .medium .bars i:nth-child(-n+2){background:var(--amber)}
+    .difficult .bars i{background:var(--green)}
+    .easy .level{color:var(--red)} .medium .level{color:var(--amber)} .difficult .level{color:var(--green)}
+    .tips{margin:12px 0 0;padding:0;list-style:none;color:var(--muted);font-size:11px;line-height:1.65}
+    .tips li{padding:4px 0 4px 17px;position:relative}
+    .tips li:before{content:"↗";position:absolute;left:0;color:var(--cyan)}
+    .lenrow{display:flex;align-items:center;gap:12px;margin:9px 0 19px}
+    input[type=range]{flex:1;accent-color:var(--cyan);min-width:0}
+    input[type=number]{width:72px;text-align:center;padding:9px}
+    fieldset{border:0;padding:0;margin:0 0 16px}
+    .options{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:12px}
+    .option{display:flex;gap:9px;align-items:center;color:var(--muted);font-size:12px;cursor:pointer}
+    .option input{accent-color:var(--cyan);width:15px;height:15px}
+    .msg{min-height:18px;color:var(--red);font-size:11px;margin:0 0 7px}
+    .result{margin-top:17px;padding:13px;border-radius:14px;background:#091321;border:1px solid #2a3b52}
+    .resulttop{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:9px}
+    .resulttop span{font:10px 'DM Mono',monospace;letter-spacing:.1em;color:var(--soft)}
+    .password{font:14px 'DM Mono',monospace;overflow-wrap:anywhere;color:#b9f5e9;line-height:1.6}
+    .actions{display:flex;gap:8px;align-items:center;margin-top:12px;flex-wrap:wrap}
+    .actions .btn{padding:9px 12px}
+    .copied{font-size:11px;color:var(--green)}
+    .guide{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+    .guideitem{border:1px solid var(--line);border-radius:15px;background:#0e1827;padding:15px}
+    .guideitem b{display:flex;align-items:center;gap:8px;font-size:12px;margin-bottom:6px}
+    .guideitem p{font-size:10px;line-height:1.7;color:var(--muted)}
+    .dot{width:7px;height:7px;border-radius:50%}
+    .privacy{text-align:center;color:#71839b;font-size:10px;margin:25px 0 0}
+    .footer{display:flex;justify-content:space-between;gap:12px;color:#64758d;font:10px 'DM Mono',monospace;
+      border-top:1px solid #1d2a3d;margin-top:35px;padding-top:18px}
+    @media(max-width:760px){.topbar{margin-bottom:45px}.grid{grid-template-columns:1fr}.guide{grid-template-columns:1fr}
+      .card{padding:22px}.footer{flex-direction:column;text-align:center}}
+    @media(max-width:420px){.shell{width:calc(100% - 22px);padding-top:20px}.status{font-size:9px}
+      .brand{font-size:13px}h1{font-size:40px}.options{gap:12px 6px}}
+    @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+  </style>
+</head>
+<body>
+<div class="shell">
+  <nav class="topbar">
+    <div class="brand"><div class="brandmark">✳</div><div>KEYLOOM<small>SECURITY STUDIO</small></div></div>
+    <div class="status">● SYSTEM READY</div>
+  </nav>
+
+  <header class="hero">
+    <div class="eyebrow"><span class="pulse"></span> PERSONAL PASSWORD TOOLKIT</div>
+    <h1>Your security.<br><span>Your control.</span></h1>
+    <p>Test the strength of a password or generate a fresh one with your preferred character mix. Simple tools for smarter password habits.</p>
+  </header>
+
+  <main class="grid">
+    <section class="card checker">
+      <div class="cardhead">
+        <div class="iconbox">⌁</div>
+        <div><h2>Password Analyzer</h2><p class="sub">Check strength and discover ways to improve it.</p></div>
+      </div>
+      <label for="pw">ENTER A PASSWORD</label>
+      <div class="inputrow">
+        <input id="pw" type="password" placeholder="Type a password to analyze" autocomplete="off" spellcheck="false">
+        <button type="button" class="btn secondary" id="toggle" aria-pressed="false">Show</button>
+      </div>
+      <button type="button" class="btn primary" id="check-btn" disabled>ANALYZE PASSWORD ↗</button>
+      <div class="meterbox" id="strength" aria-live="polite">
+        <div class="meterhead"><span class="meterlabel">STRENGTH INDICATOR</span><span class="level" id="level">Awaiting input</span></div>
+        <div class="bars"><i></i><i></i><i></i></div>
+        <ul class="tips" id="tips"><li>Your password is analyzed locally in this browser.</li></ul>
+      </div>
+    </section>
+
+    <section class="card generator">
+      <div class="cardhead">
+        <div class="iconbox">✧</div>
+        <div><h2>Password Generator</h2><p class="sub">Create a random password using Python's secure secrets module.</p></div>
+      </div>
+      <form method="post" id="gen-form">
+        <label for="len">PASSWORD LENGTH</label>
+        <div class="lenrow">
+          <input id="len" type="number" name="length" value="{{ opts.length }}" min="{{ min_len }}" max="{{ max_len }}">
+          <input id="len-range" type="range" min="{{ min_len }}" max="{{ max_len }}" value="{{ opts.length }}" aria-label="Password length">
+        </div>
+        <fieldset>
+          <legend class="legend">CHARACTER SET</legend>
+          <div class="options">
+            <label class="option"><input type="checkbox" name="upper" {% if opts.upper %}checked{% endif %}> Uppercase A–Z</label>
+            <label class="option"><input type="checkbox" name="lower" {% if opts.lower %}checked{% endif %}> Lowercase a–z</label>
+            <label class="option"><input type="checkbox" name="digits" {% if opts.digits %}checked{% endif %}> Numbers 0–9</label>
+            <label class="option"><input type="checkbox" name="symbols" {% if opts.symbols %}checked{% endif %}> Symbols !@#</label>
+          </div>
+        </fieldset>
+        <p class="msg" id="gen-msg" role="alert">{% if result.error %}{{ result.error }}{% endif %}</p>
+        <button class="btn primary" id="gen-btn" type="submit">GENERATE SECURE PASSWORD ✦</button>
+      </form>
+      {% if result.password %}
+      <div class="result">
+        <div class="resulttop"><span>GENERATED PASSWORD</span><span>✓ CREATED</span></div>
+        <div class="password" id="pwtext">{{ result.password }}</div>
+        <div class="actions">
+          <button type="button" class="btn secondary" id="copy">COPY</button>
+          <button type="submit" form="gen-form" class="btn secondary" id="regen">↻ REGENERATE</button>
+          <span class="copied" id="copied" aria-live="polite"></span>
+        </div>
+      </div>
+      {% endif %}
+    </section>
+  </main>
+
+  <section class="guide" aria-label="Password strength levels">
+    <div class="guideitem"><b><span class="dot" style="background:var(--red)"></span> EASY / WEAK</b><p>Short, predictable, or built from common words, sequences, or repeated characters.</p></div>
+    <div class="guideitem"><b><span class="dot" style="background:var(--amber)"></span> MEDIUM / MODERATE</b><p>Some character variety, but still has room for improvement in length or pattern.</p></div>
+    <div class="guideitem"><b><span class="dot" style="background:var(--green)"></span> DIFFICULT / STRONG</b><p>Longer, varied, and less predictable. Use a unique password for every account.</p></div>
+  </section>
+
+  <p class="privacy">⌑ Password checking stays in your browser. Generated passwords are created by the Flask app.</p>
+  <footer class="footer"><span>KEYLOOM // MINI PROJECT</span><span>BUILD BETTER PASSWORD HABITS</span></footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  const COMMON = ["admin","password","passwd","pass","qwerty","welcome","login","user","root","letmein","hello","test","guest","master","india","love","dragon","monkey","secret","abc","asdf"];
+  const LEET = {"@":"a","4":"a","3":"e","1":"i","!":"i","0":"o","$":"s","5":"s","7":"t"};
+  const pw = document.getElementById("pw");
+  const box = document.getElementById("strength");
+  const level = document.getElementById("level");
+  const tips = document.getElementById("tips");
+  const checkBtn = document.getElementById("check-btn");
+
+  function hasCommon(p) {
+    const lower = p.toLowerCase();
+    const normalized = [...lower].map(c => LEET[c] || c).join("");
+    return COMMON.some(w => lower.includes(w) || normalized.includes(w));
+  }
+  function hasSequence(p) {
+    const s = p.toLowerCase();
+    for (let i=0; i<s.length-2; i++) {
+      const [a,b,c] = s.slice(i,i+3);
+      const same = (/[0-9]/.test(a)&&/[0-9]/.test(b)&&/[0-9]/.test(c)) ||
+                   (/[a-z]/.test(a)&&/[a-z]/.test(b)&&/[a-z]/.test(c));
+      if (same && ((b.charCodeAt(0)-a.charCodeAt(0)===1 && c.charCodeAt(0)-b.charCodeAt(0)===1) ||
+                   (a.charCodeAt(0)-b.charCodeAt(0)===1 && b.charCodeAt(0)-c.charCodeAt(0)===1))) return true;
+    }
+    return false;
+  }
+  function trailing(p) {
+    return /^[A-Za-z]+[^A-Za-z0-9]*[0-9]*$/.test(p) || /^[A-Za-z]+[0-9]*[^A-Za-z0-9]*$/.test(p);
+  }
+  function analyze(p) {
+    const flags = [/[a-z]/.test(p),/[A-Z]/.test(p),/[0-9]/.test(p),/[^A-Za-z0-9\s]/.test(p)];
+    const variety = flags.filter(Boolean).length;
+    const common = hasCommon(p), sequence = hasSequence(p), repeat = /(.)\1\1/.test(p);
+    let rating = "Easy";
+    if (!(common || sequence || repeat || p.length < 6 || variety < 2)) {
+      rating = (p.length >= 8 && variety === 4 && !trailing(p)) ? "Difficult" : "Medium";
+    }
+    const advice = [];
+    if (common) advice.push("Avoid common words such as password or admin, even when characters are substituted.");
+    if (sequence) advice.push("Avoid predictable sequences such as 123 or abc.");
+    if (repeat) advice.push("Avoid repeating the same character three or more times.");
+    if (p.length < 12) advice.push("Try using 12 or more characters.");
+    const missing = [];
+    if (!flags[0]) missing.push("lowercase letters");
+    if (!flags[1]) missing.push("uppercase letters");
+    if (!flags[2]) missing.push("numbers");
+    if (!flags[3]) missing.push("symbols");
+    if (missing.length && advice.length < 4) advice.push("Consider adding " + missing.slice(0,2).join(" and ") + ".");
+    if (trailing(p) && advice.length < 4) advice.push("Mix numbers and symbols throughout the password, not only at the end.");
+    if (advice.length < 4) advice.push("Use a different password for every account.");
+    return {rating, advice: advice.slice(0,4)};
+  }
+  function render() {
+    const value = pw.value;
+    box.className = "meterbox";
+    tips.innerHTML = "";
+    if (!value) {
+      level.textContent = "Awaiting input";
+      tips.innerHTML = "<li>Your password is analyzed locally in this browser.</li>";
+      checkBtn.disabled = true;
+      return;
+    }
+    const result = analyze(value);
+    box.classList.add(result.rating.toLowerCase());
+    level.textContent = result.rating.toUpperCase() + (result.rating === "Easy" ? " / WEAK" : result.rating === "Medium" ? " / MODERATE" : " / STRONG");
+    result.advice.forEach(item => {
+      const li = document.createElement("li");
+      li.textContent = item;
+      tips.appendChild(li);
+    });
+    checkBtn.disabled = false;
+  }
+  pw.addEventListener("input", render);
+  checkBtn.addEventListener("click", render);
+  document.getElementById("toggle").addEventListener("click", function () {
+    const showing = pw.type === "password";
+    pw.type = showing ? "text" : "password";
+    this.textContent = showing ? "Hide" : "Show";
+    this.setAttribute("aria-pressed", String(showing));
+  });
+
+  const form = document.getElementById("gen-form");
+  const len = document.getElementById("len");
+  const range = document.getElementById("len-range");
+  const msg = document.getElementById("gen-msg");
+  const genBtn = document.getElementById("gen-btn");
+  const checks = [...form.querySelectorAll('input[type="checkbox"]')];
+  function validate() {
+    const n = Number(len.value);
+    let error = "";
+    if (!len.value.trim() || !Number.isInteger(n)) error = "Enter a whole-number length.";
+    else if (n < {{ min_len }} || n > {{ max_len }}) error = "Length must be between {{ min_len }} and {{ max_len }}.";
+    else if (!checks.some(c => c.checked)) error = "Select at least one character type.";
+    msg.textContent = error;
+    genBtn.disabled = Boolean(error);
+    return !error;
+  }
+  len.addEventListener("input", () => { if (Number(len.value) >= {{ min_len }} && Number(len.value) <= {{ max_len }}) range.value = len.value; validate(); });
+  range.addEventListener("input", () => { len.value = range.value; validate(); });
+  checks.forEach(c => c.addEventListener("change", validate));
+  form.addEventListener("submit", e => { if (!validate()) e.preventDefault(); });
+  validate();
+
+  const copy = document.getElementById("copy");
+  if (copy) copy.addEventListener("click", async () => {
+    const text = document.getElementById("pwtext").textContent;
+    const status = document.getElementById("copied");
+    try {
+      await navigator.clipboard.writeText(text);
+      status.textContent = "Copied!";
+    } catch (error) {
+      status.textContent = "Select and copy manually.";
+    }
+  });
+  render();
+})();
+</script>
+</body>
+</html>
